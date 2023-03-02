@@ -1,0 +1,8 @@
+GAME_NAME = "Game name"
+
+FPS = 60
+
+WINDOW_WIDTH = 400
+WINDOW_HEIGHT = 400
+
+BASE_PATH = ''
