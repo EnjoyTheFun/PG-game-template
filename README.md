@@ -2,7 +2,7 @@
  My personal template for starting up pygame projects.
 
 ## Description
-This project represents my usual workflow when creating pygame projects. It contains the very basics you need to start up your own idea with an organized approach.
+This project represents my usual workflow and project structure when creating pygame projects. It contains basic examples that can get you going to develop your own idea with an organized approach.
 
 ## How to use
 First and foremost I strongly suggest to create a virtual environment in your prefered way. The easiest way might be:
