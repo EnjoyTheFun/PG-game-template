@@ -4,10 +4,9 @@ import pygame
 
 
 class Unit(Sprite):
-    def __init__(self, name, coords, size, speed, asset):
+    def __init__(self, coords, size, speed, asset):
         super().__init__()
 
-        self.name = name
         self.movement_speed = speed
         self.rect = pygame.Rect(coords[0], coords[1], size, size)
         self.asset = asset

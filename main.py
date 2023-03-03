@@ -1,6 +1,6 @@
 from settings import GAME_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, BASE_PATH, FPS
-from Data.asset_library import AssetLibrary
-from Data.game_manager import GameManager
+from Source.asset_library import AssetLibrary
+from Source.game_manager import GameManager
 import pygame
 
 
@@ -29,9 +29,9 @@ def main():
     # Assuming that the asset size is also equivalent to the unit's hitbox
     size = assets.TEST_ASSET.get_width()
     # Create Unit object
-    game_manager.spawn_unit(position=(WINDOW_WIDTH / 2 - size / 2,
-                                      WINDOW_HEIGHT / 2 - size / 2),
-                            size=size, speed=2)
+    game_manager.spawn_player_unit(position=(WINDOW_WIDTH / 2 - size / 2,
+                                             WINDOW_HEIGHT / 2 - size / 2),
+                                   size=size, speed=2)
 
     # Game loop
     while True:
@@ -40,6 +40,9 @@ def main():
 
         # Handle movement
         game_manager.handle_movement()
+        
+        # Check for collisoin
+        game_manager.unit_collide()
 
         # Handle events
         game_manager.handle_events()

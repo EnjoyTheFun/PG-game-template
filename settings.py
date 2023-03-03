@@ -1,8 +1,9 @@
-GAME_NAME = "Game name"
+import json
 
-FPS = 60
-
-WINDOW_WIDTH = 400
-WINDOW_HEIGHT = 400
-
-BASE_PATH = ''
+with open("settings.json", "r") as f:
+    json_dict = json.load(f)
+    GAME_NAME = json_dict["game_name"]
+    FPS = json_dict["fps"]
+    WINDOW_WIDTH = json_dict["window_width"]
+    WINDOW_HEIGHT = json_dict["window_height"]
+    BASE_PATH = json_dict["base_path"]

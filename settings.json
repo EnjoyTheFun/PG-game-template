@@ -1,0 +1,7 @@
+{
+    "game_name": "Game name",
+    "fps": 60,
+    "window_width": 400,
+    "window_height": 400,
+    "base_path": ""
+}
