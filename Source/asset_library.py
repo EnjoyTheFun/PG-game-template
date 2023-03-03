@@ -14,4 +14,5 @@ class AssetLibrary():
             self.path, 'Assets', 'Images', 'test.png'))
 
     def optimize_all_assets(self):
+        # Use convert_alpha() to preserve transparency if necessary
         self.TEST_ASSET = self.TEST_ASSET.convert()
