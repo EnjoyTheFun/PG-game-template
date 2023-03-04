@@ -26,19 +26,19 @@ def main():
 
     # Init game manager
     game_manager = GameManager(window, assets)
-    
+
     # Init UI manager
     ui_manager = UIManager(window)
 
-    # Get size. 
+    # Get size.
     # Assuming that the asset size is also equivalent to the unit's hitbox
     size = assets.TEST_ASSET.get_width()
-    
+
     # Create controllable Unit object
     game_manager.spawn_player_unit(position=(WINDOW_WIDTH / 2 - size / 2,
                                              WINDOW_HEIGHT / 2 - size / 2),
                                    size=size, speed=2)
-    
+
     # Create first goal unit
     game_manager.spawn_goal_unit()
 
@@ -49,7 +49,7 @@ def main():
 
         # Handle movement
         game_manager.handle_movement()
-        
+
         # Check for collisoin
         game_manager.unit_collide()
 
@@ -58,7 +58,7 @@ def main():
 
         # Draw all objects
         game_manager.draw_objects()
-        
+
         # Display score
         ui_manager.display_score(game_manager.player.score)
 

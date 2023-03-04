@@ -1,13 +1,14 @@
 import pygame
 from settings import WINDOW_WIDTH
 
+
 class UIManager():
     """Class that manages all UI elements and interactions"""
-    
+
     def __init__(self, surface):
         self.surface = surface
         self.font = pygame.font.SysFont("Arial", 20)
-        
+
     def display_score(self, score):
         "Blit text on the main surface repesenting the current score."
         text = self.font.render(str(score), True, pygame.Color("white"))

@@ -4,7 +4,7 @@ from Source.Models.player import Player
 from pygame.locals import (QUIT, MOUSEBUTTONDOWN, KEYDOWN, K_SPACE, K_r,
                            KMOD_CTRL, K_w, K_UP, K_s, K_DOWN, K_a, K_LEFT,
                            K_d, K_RIGHT)
-from settings import WINDOW_WIDTH, WINDOW_HEIGHT
+from settings import WINDOW_WIDTH, WINDOW_HEIGHT, CUSTOM_EVENT
 import random
 
 
@@ -17,32 +17,37 @@ class GameManager():
         self.assets = assets
         self.units = pygame.sprite.Group()
 
+        self.milestone = 4
+        self.color = pygame.Color("firebrick2")
+
     def spawn_player_unit(self, position, size, speed):
         """Function that creates the controllable unit."""
         self.player_unit = Unit(position, size, speed, self.assets.TEST_ASSET)
+        # You can also approach this differently - add to group when instantiating member
+        # since object is derived from Sprite.
         self.units.add(self.player_unit)
 
     def draw_objects(self):
         """Function that draws all objects."""
         # You have to 'refresh' the state of the screen so you dont draw on top
         # of each draw execution. Simplest way is to just recolor everything back
-        # to the default background color.
+        # to the default background color. Another aproach is to use group.clear()
         self.surface.fill(pygame.Color('black'))
         # Draw each unit
-        for unit in self.units:
-            unit.draw(self.surface)
+        self.units.draw(self.surface)
+        # You can also loop individually and call draw()
 
     def handle_movement(self):
         """Function that manages the input for movement actions."""
         keys = pygame.key.get_pressed()
-        if (keys[K_UP] or keys[K_w]):
-            self.player_unit.move(pygame.Vector2(0, -1))
-        if keys[K_DOWN] or keys[K_s]:
-            self.player_unit.move(pygame.Vector2(0, 1))
-        if keys[K_LEFT] or keys[K_a]:
-            self.player_unit.move(pygame.Vector2(-1, 0))
-        if keys[K_RIGHT] or keys[K_d]:
-            self.player_unit.move(pygame.Vector2(1, 0))
+        input_up = keys[K_UP] or keys[K_w]
+        input_down = keys[K_DOWN] or keys[K_s]
+        input_left = keys[K_LEFT] or keys[K_a]
+        input_right = keys[K_RIGHT] or keys[K_d]
+
+        direction_v = pygame.math.Vector2(
+            input_right - input_left, input_down - input_up)
+        self.player_unit.move(direction_v)
 
     def handle_events(self):
         """Function that does the event handling."""
@@ -51,7 +56,7 @@ class GameManager():
             if event.type == QUIT:
                 pygame.quit()
                 exit()
-            # If mouse button was pressed   
+            # If mouse button was pressed
             elif event.type == MOUSEBUTTONDOWN:
                 mouseXY = pygame.mouse.get_pos()
                 if event.button == 1:
@@ -62,7 +67,7 @@ class GameManager():
                     print('Right mouse button click.')
                 else:
                     print(mouseXY)
-            # If keyboard key was pressed        
+            # If keyboard key was pressed
             elif event.type == KEYDOWN:
                 if event.key == K_SPACE:
                     print('Space pressed. Spawning new unit!')
@@ -71,26 +76,32 @@ class GameManager():
                 # If key combination was pressed
                 elif event.key == K_r and pygame.key.get_mods() & KMOD_CTRL:
                     print('Key combination CTRL+R pressed.')
+            elif event.type == CUSTOM_EVENT:  # custom event
+                # Change color of goal to random one
+                self.color = pygame.Color(random.randint(0, 255),
+                                          random.randint(0, 255),
+                                          random.randint(0, 255))
 
     def spawn_goal_unit(self):
         """Function that creates the goal unit at random position."""
         # get the size of the player unit
         u_width = self.player_unit.rect.width
         u_height = self.player_unit.rect.height
-        
+
+        # generate random coordinates inside the window
         rand_x = random.randrange(0, WINDOW_WIDTH - u_width)
         rand_y = random.randrange(0, WINDOW_HEIGHT - u_height)
         # if selected goal position is already colliding with the player_unit
-        # generate new one and check again
+        # generate new one and check for collision again
         while self.player_unit.rect.colliderect((rand_x, rand_y),
                                                 (u_width/2, u_height/2)):
             rand_x = random.randrange(0, WINDOW_WIDTH - u_width)
             rand_y = random.randrange(0, WINDOW_HEIGHT - u_height)
-        
-        # create custom surface    
+
+        # create custom surface
         surf = pygame.Surface((u_width/2, u_height/2))
         # fill surface with color
-        surf.fill(pygame.Color('firebrick2'))
+        surf.fill(self.color)
         # set opacity of the surface (255=None)
         surf.set_alpha(150)
         # add the newly created unit to the units list
@@ -105,5 +116,10 @@ class GameManager():
                 unit.kill()
                 # increment score
                 self.player.score += 1
+                # Post custom event if amount exceeds - the unit after this one
+                # will have its color changed
+                self.milestone = self.player.score_exceeds(
+                    self.milestone,
+                    pygame.event.Event(CUSTOM_EVENT))
                 # spawn next unit
                 self.spawn_goal_unit()
